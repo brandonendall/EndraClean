@@ -94,6 +94,7 @@ public final class CleanerAccessibilityService extends AccessibilityService {
         AccessibilityNodeInfo root = getRootInActiveWindow();
         if (root == null) return;
         try {
+            if (root.getPackageName() == null || !source.equals(root.getPackageName().toString())) return;
             if (stage == 1) {
                 // Wait until the app-info page actually shows the selected app's name.
                 String label;

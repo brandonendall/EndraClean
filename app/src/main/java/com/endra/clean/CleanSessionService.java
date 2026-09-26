@@ -64,7 +64,7 @@ public final class CleanSessionService extends Service {
         PendingIntent stop = PendingIntent.getService(this, 1,
             new Intent(this, CleanSessionService.class).setAction(STOP), immutable);
         return new Notification.Builder(this, CHANNEL)
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle("EndraClean · Hydra Cache Engine")
             .setContentText(message)
             .setContentIntent(open)
