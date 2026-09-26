@@ -37,7 +37,7 @@ public final class MainActivity extends Activity {
     }
     private void showHome(){
         systemPage=false;base();header(true);
-        HydraArtworkView art=new HydraArtworkView(this);root.addView(art,new LinearLayout.LayoutParams(-1,-2));
+        ImageView art=new ImageView(this); art.setImageResource(R.drawable.endra_hydra_home); art.setScaleType(ImageView.ScaleType.CENTER_CROP); art.setAdjustViewBounds(true); LinearLayout.LayoutParams ap=new LinearLayout.LayoutParams(-1,dp(300)); ap.setMargins(0,dp(8),0,dp(8)); root.addView(art,ap);
         TextView title=text("EndraClean",31,R.color.gold);title.setGravity(Gravity.CENTER);title.setTypeface(Typeface.DEFAULT,Typeface.BOLD);root.addView(title);
         TextView tag=text("CLEANER  •  FASTER  •  SMOOTHER",12,R.color.muted);tag.setGravity(Gravity.CENTER);root.addView(tag);
         LinearLayout p=panel(); LinearLayout.LayoutParams pp=new LinearLayout.LayoutParams(-1,-2);pp.setMargins(0,dp(18),0,0);root.addView(p,pp);
