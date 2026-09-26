@@ -8,10 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install approved Endra Hydra artwork
-        run: |
-          mkdir -p app/src/main/res/drawable-nodpi
-          curl -L --fail -o app/src/main/res/drawable-nodpi/endra_hydra_home.webp https://raw.githubusercontent.com/brandonendall/EndraLink/9ae406d3ac13ec61a933c4bc1e551376fe20eba6/app/src/main/res/drawable-nodpi/hydra_home.webp
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
