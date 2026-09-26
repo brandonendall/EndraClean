@@ -1,11 +1,1 @@
-<resources>
-    <color name="launcher_background">#001323</color>
-    <color name="navy">#04111F</color>
-    <color name="surface">#0B2135</color>
-    <color name="surface_raised">#102D45</color>
-    <color name="gold">#F6C84A</color>
-    <color name="amber">#B57C16</color>
-    <color name="silver">#EAF3FA</color>
-    <color name="muted">#A0B8CB</color>
-    <color name="outline">#234963</color>
-</resources>
+<resources><color name="launcher_background">#070503</color><color name="navy">#070503</color><color name="surface">#100D08</color><color name="surface_raised">#1A140A</color><color name="gold">#F6C84A</color><color name="amber">#B57C16</color><color name="silver">#FFF7DF</color><color name="muted">#C9B98D</color><color name="outline">#9A6B13</color></resources>
