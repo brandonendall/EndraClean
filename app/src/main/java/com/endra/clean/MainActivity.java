@@ -69,7 +69,7 @@ public final class MainActivity extends Activity {
             boolean sys=(info.flags&(ApplicationInfo.FLAG_SYSTEM|ApplicationInfo.FLAG_UPDATED_SYSTEM_APP))!=0;
             if(systemPage!=sys)continue;
             if(!systemPage&&!CleanerAccessibilityService.eligible(this,info.packageName))continue;
-            long bytes=-1;if(usage&&stats!=null)try{bytes=stats.queryStatsForPackage(StorageManager.UUID_DEFAULT,info.packageName,Process.myUserHandle()).getCacheBytes();}catch(Exception ignored){}
+            long bytes=-1;if(usage&&stats!=null)try{bytes=stats.queryStatsForPackage(StorageManager.UUID_DEFAULT,info.packageName,android.os.Process.myUserHandle()).getCacheBytes();}catch(Exception ignored){}
             AppEntry e=new AppEntry(info.packageName,pm.getApplicationLabel(info).toString(),bytes);apps.add(e);
         }
         Collections.sort(apps,(a,b)->a.label.compareToIgnoreCase(b.label));
@@ -81,7 +81,7 @@ public final class MainActivity extends Activity {
         if(clean!=null)clean.setEnabled(CleanerAccessibilityService.connected());
     }
     private void selectAll(){for(int i=0;i<rows.getChildCount();i++)if(rows.getChildAt(i) instanceof CheckBox)((CheckBox)rows.getChildAt(i)).setChecked(true);}
-    private boolean hasUsageAccess(){AppOpsManager o=(AppOpsManager)getSystemService(APP_OPS_SERVICE);return o!=null&&o.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,Process.myUid(),getPackageName())==AppOpsManager.MODE_ALLOWED;}
+    private boolean hasUsageAccess(){AppOpsManager o=(AppOpsManager)getSystemService(APP_OPS_SERVICE);return o!=null&&o.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,android.os.Process.myUid(),getPackageName())==AppOpsManager.MODE_ALLOWED;}
     private void startClean(){
         ArrayList<String>s=new ArrayList<>();for(AppEntry e:apps)if(e.selected&&CleanerAccessibilityService.eligible(this,e.packageName))s.add(e.packageName);
         if(s.isEmpty()){status.setText("Select at least one user app.");return;}if(!CleanerAccessibilityService.connected()){status.setText("Enable the cleaner service first.");return;}
