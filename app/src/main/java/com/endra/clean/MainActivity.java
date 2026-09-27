@@ -6,6 +6,7 @@ import android.app.usage.StorageStatsManager;
 import android.content.*;
 import android.content.pm.*;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.os.*;
 import android.os.storage.StorageManager;
 import android.provider.Settings;
@@ -64,23 +65,49 @@ public final class MainActivity extends Activity {
     }
     private void showApps(boolean system){
         systemPage=system;base();header(false);
-        TextView title=text(system?"SYSTEM APPS":"USER APPS",24,R.color.gold);title.setTypeface(Typeface.DEFAULT,Typeface.BOLD);root.addView(title);
-        root.addView(text(system?"Built-in Android apps · view only":"Installed apps · cache cleaning",12,R.color.muted));
-        LinearLayout controls=panel();root.addView(controls);
-        controls.addView(text("CACHE CONTROL",12,R.color.gold));
-        status=text(system?"System apps are protected by EndraClean.":"Select installed apps to clear cache.",14,R.color.silver);controls.addView(status);
-        if(!system){
-            controls.addView(button("Grant usage access",false,()->startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))));
-            controls.addView(button("Enable cleaner service",false,()->startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))));
-            controls.addView(button("Select all",false,this::selectAll));
-        }
-        controls.addView(button("Rescan "+(system?"system":"user")+" apps",false,this::scanApps));
-        if(!system){clean=button("CLEAN SELECTED CACHE",true,this::startClean);controls.addView(clean);}
-        rows=panel();LinearLayout.LayoutParams rp=new LinearLayout.LayoutParams(-1,-2);rp.topMargin=dp(16);root.addView(rows,rp);scanApps();
+        if(system){ showSystemApps(); return; }
+
+        LinearLayout hero=goldPanel();
+        TextView title=text("♟  USER APPS",23,R.color.gold); title.setTypeface(Typeface.DEFAULT,Typeface.BOLD); hero.addView(title);
+        hero.addView(text("Scan and clear cache for apps you installed.",13,R.color.silver));
+        LinearLayout.LayoutParams heroLp=new LinearLayout.LayoutParams(-1,-2); heroLp.setMargins(0,dp(12),0,dp(14)); root.addView(hero,heroLp);
+
+        LinearLayout summary=goldPanel();
+        TextView cacheTitle=text("CACHE SCAN",12,R.color.gold); cacheTitle.setTypeface(Typeface.DEFAULT,Typeface.BOLD); summary.addView(cacheTitle);
+        status=text("Ready to scan installed apps.",14,R.color.silver); summary.addView(status);
+        LinearLayout actions=new LinearLayout(this); actions.setGravity(Gravity.CENTER); actions.setOrientation(LinearLayout.HORIZONTAL);
+        Button scan=compactButton("Scan Cache",true,()->{if(!hasUsageAccess())startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));else scanApps();});
+        Button rescan=compactButton("Rescan",false,this::scanApps);
+        Button all=compactButton("Select All",false,this::selectAll);
+        actions.addView(scan,new LinearLayout.LayoutParams(0,dp(54),1));
+        actions.addView(rescan,new LinearLayout.LayoutParams(0,dp(54),1));
+        actions.addView(all,new LinearLayout.LayoutParams(0,dp(54),1));
+        summary.addView(actions);
+        root.addView(summary);
+
+        rows=new LinearLayout(this); rows.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams rp=new LinearLayout.LayoutParams(-1,-2); rp.setMargins(0,dp(14),0,dp(14)); root.addView(rows,rp);
+
+        clean=button("🧹  Clean Selected Cache",true,this::startClean);
+        root.addView(clean);
+        scanApps();
+    }
+    private void showSystemApps(){
+        TextView title=text("SYSTEM APPS",24,R.color.gold);title.setTypeface(Typeface.DEFAULT,Typeface.BOLD);root.addView(title);
+        root.addView(text("Built-in Android apps · protected by EndraClean",12,R.color.muted));
+        status=text("System apps are protected by EndraClean.",14,R.color.silver);root.addView(status);
+        rows=goldPanel();root.addView(rows);scanApps();
+    }
+    private LinearLayout goldPanel(){
+        LinearLayout p=new LinearLayout(this); p.setOrientation(LinearLayout.VERTICAL); p.setPadding(dp(16),dp(14),dp(16),dp(14));
+        GradientDrawable g=new GradientDrawable(); g.setColor(getColor(R.color.surface)); g.setStroke(dp(2),getColor(R.color.outline)); g.setCornerRadius(dp(8)); p.setBackground(g); return p;
+    }
+    private Button compactButton(String label,boolean primary,Runnable action){
+        Button b=button(label,primary,action); b.setTextSize(13); LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(0,dp(54),1); lp.setMargins(dp(3),dp(8),dp(3),0); b.setLayoutParams(lp); return b;
     }
     @Override protected void onResume(){super.onResume();if(rows!=null)scanApps();}
     private void scanApps(){
-        if(rows==null)return; apps.clear();rows.removeAllViews();rows.addView(text(systemPage?"SYSTEM APPLICATIONS":"USER APPLICATIONS",12,R.color.gold));
+        if(rows==null)return; apps.clear();rows.removeAllViews(); if(systemPage)rows.addView(text("SYSTEM APPLICATIONS",12,R.color.gold));
         boolean usage=hasUsageAccess(); StorageStatsManager stats=(StorageStatsManager)getSystemService(STORAGE_STATS_SERVICE); PackageManager pm=getPackageManager();
         for(ApplicationInfo info:pm.getInstalledApplications(0)){
             boolean sys=(info.flags&(ApplicationInfo.FLAG_SYSTEM|ApplicationInfo.FLAG_UPDATED_SYSTEM_APP))!=0;
@@ -92,9 +119,19 @@ public final class MainActivity extends Activity {
         Collections.sort(apps,(a,b)->a.label.compareToIgnoreCase(b.label));
         for(AppEntry e:apps){
             if(systemPage){TextView v=text(e.label+(e.cacheBytes>=0?"  ·  "+Formatter.formatShortFileSize(this,e.cacheBytes):""),15,R.color.silver);v.setPadding(dp(8),dp(12),dp(8),dp(12));rows.addView(v);}
-            else{CheckBox b=new CheckBox(this);b.setText(e.label+(e.cacheBytes>=0?"  ·  "+Formatter.formatShortFileSize(this,e.cacheBytes):""));b.setTextColor(getColor(R.color.silver));b.setButtonTintList(android.content.res.ColorStateList.valueOf(getColor(R.color.gold)));b.setPadding(dp(6),dp(8),dp(6),dp(8));b.setOnCheckedChangeListener((x,on)->e.selected=on);rows.addView(b);}
+            else{
+                LinearLayout row=goldPanel(); row.setGravity(Gravity.CENTER_VERTICAL); row.setOrientation(LinearLayout.HORIZONTAL);
+                try{ImageView icon=new ImageView(this);icon.setImageDrawable(pm.getApplicationIcon(e.packageName));row.addView(icon,new LinearLayout.LayoutParams(dp(44),dp(44)));}catch(Exception ignored){}
+                TextView label=text(e.label+(e.cacheBytes>=0?"\n"+Formatter.formatShortFileSize(this,e.cacheBytes):"\nCache size unavailable"),15,R.color.silver);
+                LinearLayout.LayoutParams llp=new LinearLayout.LayoutParams(0,-2,1);llp.setMargins(dp(12),0,dp(8),0);row.addView(label,llp);
+                CheckBox cb=new CheckBox(this);cb.setButtonTintList(android.content.res.ColorStateList.valueOf(getColor(R.color.gold)));cb.setOnCheckedChangeListener((x,on)->e.selected=on);row.addView(cb);
+                LinearLayout.LayoutParams rlp=new LinearLayout.LayoutParams(-1,-2);rlp.setMargins(0,0,0,dp(8));rows.addView(row,rlp);
+            }
         }
-        if(status!=null)status.setText(systemPage?apps.size()+" protected system apps found. Viewing only.":apps.size()+" user apps found. "+(usage?"Cache sizes shown where available.":"Grant usage access to show cache sizes."));
+        if(status!=null){
+            long total=0; for(AppEntry e:apps)if(e.cacheBytes>0)total+=e.cacheBytes;
+            status.setText(systemPage?apps.size()+" protected system apps found. Viewing only.":"Last Scan: just now\nTotal Cache Found: "+(usage?Formatter.formatShortFileSize(this,total):"Usage access required"));
+        }
         if(clean!=null)clean.setEnabled(CleanerAccessibilityService.connected());
     }
     private void selectAll(){for(int i=0;i<rows.getChildCount();i++)if(rows.getChildAt(i) instanceof CheckBox)((CheckBox)rows.getChildAt(i)).setChecked(true);}
