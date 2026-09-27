@@ -42,28 +42,31 @@ public final class MainActivity extends Activity {
         Button help=small("?",this::showHelp);bar.addView(help,new LinearLayout.LayoutParams(dp(52),dp(48)));root.addView(bar);
     }
     private void showHome(){
-        systemPage=false; rows=null; clean=null; status=null;
-        FrameLayout shell=new FrameLayout(this); shell.setBackgroundColor(getColor(R.color.navy));
-        final FrameLayout design=new FrameLayout(this);
-        ImageView art=new ImageView(this); art.setImageResource(R.drawable.endra_clean_home); art.setScaleType(ImageView.ScaleType.FIT_XY);
-        design.addView(art,new FrameLayout.LayoutParams(-1,-1));
+        systemPage=false; rows=null; clean=null; status=null; base(); header(true);
 
-        View help=hotspot(()->showHelp());
-        FrameLayout.LayoutParams hp=new FrameLayout.LayoutParams(72,72,Gravity.TOP|Gravity.END); hp.setMargins(0,18,12,0); design.addView(help,hp);
-        View users=hotspot(()->showApps(false));
-        FrameLayout.LayoutParams up=new FrameLayout.LayoutParams(-1,150,Gravity.BOTTOM); up.setMargins(22,0,22,205); design.addView(users,up);
-        View systems=hotspot(()->showApps(true));
-        FrameLayout.LayoutParams sp=new FrameLayout.LayoutParams(-1,150,Gravity.BOTTOM); sp.setMargins(22,0,22,42); design.addView(systems,sp);
+        Space top=new Space(this); root.addView(top,new LinearLayout.LayoutParams(1,dp(18)));
 
-        shell.addView(design,new FrameLayout.LayoutParams(360,720,Gravity.CENTER));
-        shell.getViewTreeObserver().addOnGlobalLayoutListener(new android.view.ViewTreeObserver.OnGlobalLayoutListener(){
-            public void onGlobalLayout(){
-                shell.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                float scale=Math.min(shell.getWidth()/360f,shell.getHeight()/720f);
-                design.setScaleX(scale); design.setScaleY(scale);
-            }
-        });
-        setContentView(shell);
+        ImageView logo=new ImageView(this);
+        logo.setImageResource(R.drawable.endra_clean_launcher);
+        logo.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        LinearLayout.LayoutParams logoLp=new LinearLayout.LayoutParams(-1,dp(190));
+        logoLp.setMargins(dp(18),0,dp(18),dp(8)); root.addView(logo,logoLp);
+
+        TextView title=text("ENDRACLEAN",30,R.color.gold);
+        title.setTypeface(Typeface.DEFAULT,Typeface.BOLD); title.setGravity(Gravity.CENTER); root.addView(title);
+        TextView subtitle=text("CACHE CLEANER",12,R.color.silver);
+        subtitle.setGravity(Gravity.CENTER); subtitle.setLetterSpacing(.18f); root.addView(subtitle);
+
+        LinearLayout.LayoutParams gap=new LinearLayout.LayoutParams(1,dp(18));
+        root.addView(new Space(this),gap);
+
+        LinearLayout user=navButton("USER APPS","Scan and clear cache for apps you installed.",()->showApps(false));
+        root.addView(user);
+        LinearLayout system=navButton("SYSTEM APPS","View Android system apps separately with safety protection.",()->showApps(true));
+        root.addView(system);
+
+        TextView note=text("Choose a category to begin. EndraClean clears cache only — never app data.",12,R.color.silver);
+        note.setGravity(Gravity.CENTER); note.setPadding(dp(14),dp(18),dp(14),dp(8)); root.addView(note);
     }
     private View hotspot(Runnable action){
         View v=new View(this); v.setBackgroundColor(android.graphics.Color.TRANSPARENT);
@@ -165,7 +168,14 @@ public final class MainActivity extends Activity {
         }
         if(clean!=null)clean.setEnabled(CleanerAccessibilityService.connected());
     }
-    private void selectAll(){for(int i=0;i<rows.getChildCount();i++)if(rows.getChildAt(i) instanceof CheckBox)((CheckBox)rows.getChildAt(i)).setChecked(true);}
+    private void selectAll(){
+        for(AppEntry e:apps)e.selected=true;
+        for(int i=0;i<rows.getChildCount();i++)checkAll(rows.getChildAt(i));
+    }
+    private void checkAll(View v){
+        if(v instanceof CheckBox){((CheckBox)v).setChecked(true);return;}
+        if(v instanceof ViewGroup){ViewGroup g=(ViewGroup)v;for(int i=0;i<g.getChildCount();i++)checkAll(g.getChildAt(i));}
+    }
     private boolean hasUsageAccess(){AppOpsManager o=(AppOpsManager)getSystemService(APP_OPS_SERVICE);return o!=null&&o.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,android.os.Process.myUid(),getPackageName())==AppOpsManager.MODE_ALLOWED;}
     private void startClean(){
         ArrayList<String>s=new ArrayList<>();for(AppEntry e:apps)if(e.selected&&CleanerAccessibilityService.eligible(this,e.packageName))s.add(e.packageName);
