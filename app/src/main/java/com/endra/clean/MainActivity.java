@@ -44,29 +44,25 @@ public final class MainActivity extends Activity {
     private void showHome(){
         systemPage=false; rows=null; clean=null; status=null; base(); header(true);
 
-        Space top=new Space(this); root.addView(top,new LinearLayout.LayoutParams(1,dp(18)));
+        HydraArtworkView hydra=new HydraArtworkView(this);
+        LinearLayout.LayoutParams artLp=new LinearLayout.LayoutParams(-1,-2);
+        artLp.setMargins(0,dp(8),0,0); root.addView(hydra,artLp);
 
-        ImageView logo=new ImageView(this);
-        logo.setImageResource(R.drawable.endra_clean_launcher);
-        logo.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        LinearLayout.LayoutParams logoLp=new LinearLayout.LayoutParams(-1,dp(190));
-        logoLp.setMargins(dp(8),0,dp(8),dp(6)); root.addView(logo,logoLp);
-
-        TextView title=text("ENDRACLEAN",30,R.color.gold);
+        TextView title=text("EndraClean",32,R.color.gold);
         title.setTypeface(Typeface.DEFAULT,Typeface.BOLD); title.setGravity(Gravity.CENTER); root.addView(title);
-        TextView subtitle=text("CACHE CLEANER",12,R.color.silver);
-        subtitle.setGravity(Gravity.CENTER); subtitle.setLetterSpacing(.18f); root.addView(subtitle);
+        TextView subtitle=text("CLEANER  •  FASTER  •  SMOOTHER",12,R.color.silver);
+        subtitle.setGravity(Gravity.CENTER); subtitle.setLetterSpacing(.12f); root.addView(subtitle);
 
-        LinearLayout.LayoutParams gap=new LinearLayout.LayoutParams(1,dp(18));
-        root.addView(new Space(this),gap);
+        View line=new View(this); line.setBackgroundResource(R.drawable.accent_line);
+        LinearLayout.LayoutParams lineLp=new LinearLayout.LayoutParams(-1,dp(2)); lineLp.setMargins(dp(28),dp(6),dp(28),dp(16)); root.addView(line,lineLp);
 
-        LinearLayout user=navButton("👥   USER APPS","Scan and clear cache for apps you installed.                         ❯",()->showApps(false));
+        LinearLayout user=navButton("👥   USER APPS","Installed apps  •  scan and clear cache                         ❯",()->showApps(false));
         root.addView(user);
-        LinearLayout system=navButton("⚙   SYSTEM APPS","Scan Android system-app cache with EndraClean safety protection.     ❯",()->showApps(true));
+        LinearLayout system=navButton("⚙   SYSTEM APPS","Android services  •  protected cache view                       ❯",()->showApps(true));
         root.addView(system);
 
-        TextView note=text("Choose a category to begin. EndraClean clears cache only — never app data.",12,R.color.silver);
-        note.setGravity(Gravity.CENTER); note.setPadding(dp(14),dp(18),dp(14),dp(8)); root.addView(note);
+        TextView note=text("CACHE ONLY  •  APP DATA STAYS SAFE",11,R.color.muted);
+        note.setGravity(Gravity.CENTER); note.setLetterSpacing(.08f); note.setPadding(dp(14),dp(16),dp(14),dp(8)); root.addView(note);
     }
     private View hotspot(Runnable action){
         View v=new View(this); v.setBackgroundColor(android.graphics.Color.TRANSPARENT);
@@ -183,7 +179,7 @@ public final class MainActivity extends Activity {
         Intent i=new Intent(this,CleanSessionService.class).setAction(CleanSessionService.START);i.putStringArrayListExtra(CleanSessionService.PACKAGES,s);
         try{startForegroundService(i);status.setText("Cleaning "+s.size()+" selected user apps. Watch the notification for progress.");}catch(RuntimeException ex){status.setText("Could not start cleaning: "+ex.getMessage());}
     }
-    private void showHelp(){new AlertDialog.Builder(this).setTitle("EndraClean Help").setMessage("USER APPS\nApps you installed. EndraClean can guide Android Settings to clear only their cache. App data and storage are never cleared.\n\nSYSTEM APPS\nApps built into Android or supplied by the device maker. EndraClean lists them separately so you can identify them, but the existing safety engine blocks cleaning system apps.\n\nUse Grant usage access to display cache sizes and Enable cleaner service to run a user-started cache cleaning pass.").setPositiveButton("Got it",null).show();}
+    private void showHelp(){new AlertDialog.Builder(this,android.R.style.Theme_Material_Dialog_Alert).setTitle("✦  EndraClean Help").setMessage("USER APPS\nApps you installed. EndraClean can guide Android Settings to clear only their cache. App data and storage are never cleared.\n\nSYSTEM APPS\nApps built into Android or supplied by the device maker. EndraClean lists them separately so you can identify them, but the existing safety engine blocks cleaning system apps.\n\nUse Grant usage access to display cache sizes and Enable cleaner service to run a user-started cache cleaning pass.").setPositiveButton("Got it",null).show();}
     private LinearLayout navButton(String a,String b,Runnable r){LinearLayout p=panel();p.setMinimumHeight(dp(112));p.setGravity(Gravity.CENTER_VERTICAL);p.setClickable(true);p.setFocusable(true);p.setOnClickListener(v->r.run());TextView t=text(a,23,R.color.gold);t.setTypeface(Typeface.DEFAULT,Typeface.BOLD);p.addView(t);p.addView(text(b,13,R.color.muted));LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-1,-2);lp.setMargins(0,dp(7),0,dp(7));p.setLayoutParams(lp);return p;}
     private LinearLayout panel(){LinearLayout p=new LinearLayout(this);p.setOrientation(LinearLayout.VERTICAL);p.setPadding(dp(16),dp(14),dp(16),dp(14));p.setBackgroundResource(R.drawable.panel);return p;}
     private TextView text(String s,int z,int c){TextView v=new TextView(this);v.setText(s);v.setTextSize(z);v.setTextColor(getColor(c));v.setPadding(0,dp(5),0,dp(5));return v;}
