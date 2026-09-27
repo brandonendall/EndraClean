@@ -17,6 +17,7 @@ import java.util.*;
 
 /** EndraClean UI shell. Existing cache-only cleaning services remain unchanged. */
 public final class MainActivity extends Activity {
+    private static final int CONTENT_MAX_DP=560;
     private final List<AppEntry> apps=new ArrayList<>();
     private LinearLayout root,rows; private TextView status; private Button clean; private boolean systemPage;
 
@@ -25,9 +26,13 @@ public final class MainActivity extends Activity {
             requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS},1);
     }
     private void base(){
-        ScrollView scroll=new ScrollView(this); scroll.setFillViewport(true); scroll.setBackgroundColor(getColor(R.color.navy));
+        FrameLayout shell=new FrameLayout(this); shell.setBackgroundColor(getColor(R.color.navy));
+        ScrollView scroll=new ScrollView(this); scroll.setFillViewport(true); scroll.setClipToPadding(false);
         root=new LinearLayout(this); root.setOrientation(LinearLayout.VERTICAL); root.setPadding(dp(16),dp(10),dp(16),dp(28));
-        scroll.addView(root); setContentView(scroll);
+        scroll.addView(root,new ScrollView.LayoutParams(-1,-2));
+        FrameLayout.LayoutParams slp=new FrameLayout.LayoutParams(-1,-1,Gravity.CENTER);
+        slp.width=Math.min(getResources().getDisplayMetrics().widthPixels,dp(CONTENT_MAX_DP));
+        shell.addView(scroll,slp); setContentView(shell);
     }
     private void header(boolean home){
         LinearLayout bar=new LinearLayout(this); bar.setGravity(Gravity.CENTER_VERTICAL);
@@ -38,26 +43,27 @@ public final class MainActivity extends Activity {
     }
     private void showHome(){
         systemPage=false; rows=null; clean=null; status=null;
-        FrameLayout stage=new FrameLayout(this);
-        stage.setBackgroundColor(getColor(R.color.navy));
-        ImageView art=new ImageView(this);
-        art.setImageResource(R.drawable.endra_clean_home);
-        art.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        art.setAdjustViewBounds(false);
-        stage.addView(art,new FrameLayout.LayoutParams(-1,-1,Gravity.CENTER));
+        FrameLayout shell=new FrameLayout(this); shell.setBackgroundColor(getColor(R.color.navy));
+        final FrameLayout design=new FrameLayout(this);
+        ImageView art=new ImageView(this); art.setImageResource(R.drawable.endra_clean_home); art.setScaleType(ImageView.ScaleType.FIT_XY);
+        design.addView(art,new FrameLayout.LayoutParams(-1,-1));
 
         View help=hotspot(()->showHelp());
-        FrameLayout.LayoutParams hp=new FrameLayout.LayoutParams(dp(72),dp(72),Gravity.TOP|Gravity.END);
-        hp.setMargins(0,dp(18),dp(12),0); stage.addView(help,hp);
-
+        FrameLayout.LayoutParams hp=new FrameLayout.LayoutParams(72,72,Gravity.TOP|Gravity.END); hp.setMargins(0,18,12,0); design.addView(help,hp);
         View users=hotspot(()->showApps(false));
-        FrameLayout.LayoutParams up=new FrameLayout.LayoutParams(-1,dp(150),Gravity.BOTTOM);
-        up.setMargins(dp(22),0,dp(22),dp(205)); stage.addView(users,up);
-
+        FrameLayout.LayoutParams up=new FrameLayout.LayoutParams(-1,150,Gravity.BOTTOM); up.setMargins(22,0,22,205); design.addView(users,up);
         View systems=hotspot(()->showApps(true));
-        FrameLayout.LayoutParams sp=new FrameLayout.LayoutParams(-1,dp(150),Gravity.BOTTOM);
-        sp.setMargins(dp(22),0,dp(22),dp(42)); stage.addView(systems,sp);
-        setContentView(stage);
+        FrameLayout.LayoutParams sp=new FrameLayout.LayoutParams(-1,150,Gravity.BOTTOM); sp.setMargins(22,0,22,42); design.addView(systems,sp);
+
+        shell.addView(design,new FrameLayout.LayoutParams(360,720,Gravity.CENTER));
+        shell.getViewTreeObserver().addOnGlobalLayoutListener(new android.view.ViewTreeObserver.OnGlobalLayoutListener(){
+            public void onGlobalLayout(){
+                shell.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                float scale=Math.min(shell.getWidth()/360f,shell.getHeight()/720f);
+                design.setScaleX(scale); design.setScaleY(scale);
+            }
+        });
+        setContentView(shell);
     }
     private View hotspot(Runnable action){
         View v=new View(this); v.setBackgroundColor(android.graphics.Color.TRANSPARENT);
