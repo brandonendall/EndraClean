@@ -42,27 +42,30 @@ public final class MainActivity extends Activity {
         Button help=small("?",this::showHelp);bar.addView(help,new LinearLayout.LayoutParams(dp(58),dp(52)));root.addView(bar);
     }
     private void showHome(){
-        systemPage=false; rows=null; clean=null; status=null; base(); header(true);
+        systemPage=false; rows=null; clean=null; status=null;
+        FrameLayout shell=new FrameLayout(this); shell.setBackgroundColor(android.graphics.Color.BLACK);
 
-        HydraArtworkView hydra=new HydraArtworkView(this);
-        LinearLayout.LayoutParams artLp=new LinearLayout.LayoutParams(-1,-2);
-        artLp.setMargins(0,dp(8),0,0); root.addView(hydra,artLp);
+        ImageView art=new ImageView(this);
+        art.setImageResource(R.drawable.endra_clean_home);
+        art.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        art.setAdjustViewBounds(false);
+        shell.addView(art,new FrameLayout.LayoutParams(-1,-1));
 
-        TextView title=text("EndraClean",32,R.color.gold);
-        title.setTypeface(Typeface.DEFAULT,Typeface.BOLD); title.setGravity(Gravity.CENTER); root.addView(title);
-        TextView subtitle=text("CLEANER  •  FASTER  •  SMOOTHER",12,R.color.silver);
-        subtitle.setGravity(Gravity.CENTER); subtitle.setLetterSpacing(.12f); root.addView(subtitle);
+        View help=hotspot(this::showHelp);
+        FrameLayout.LayoutParams hp=new FrameLayout.LayoutParams(dp(76),dp(76),Gravity.TOP|Gravity.RIGHT);
+        hp.setMargins(0,dp(6),dp(4),0); shell.addView(help,hp);
 
-        View line=new View(this); line.setBackgroundResource(R.drawable.accent_line);
-        LinearLayout.LayoutParams lineLp=new LinearLayout.LayoutParams(-1,dp(2)); lineLp.setMargins(dp(28),dp(6),dp(28),dp(16)); root.addView(line,lineLp);
+        View user=hotspot(()->showApps(false));
+        FrameLayout.LayoutParams up=new FrameLayout.LayoutParams(-1,dp(128),Gravity.CENTER_HORIZONTAL);
+        up.leftMargin=dp(20);up.rightMargin=dp(20);up.topMargin=(int)(getResources().getDisplayMetrics().heightPixels*.56f);
+        shell.addView(user,up);
 
-        LinearLayout user=navButton("👥   USER APPS","Installed apps  •  scan and clear cache                         ❯",()->showApps(false));
-        root.addView(user);
-        LinearLayout system=navButton("⚙   SYSTEM APPS","Android services  •  protected cache view                       ❯",()->showApps(true));
-        root.addView(system);
+        View system=hotspot(()->showApps(true));
+        FrameLayout.LayoutParams sp=new FrameLayout.LayoutParams(-1,dp(128),Gravity.CENTER_HORIZONTAL);
+        sp.leftMargin=dp(20);sp.rightMargin=dp(20);sp.topMargin=(int)(getResources().getDisplayMetrics().heightPixels*.70f);
+        shell.addView(system,sp);
 
-        TextView note=text("CACHE ONLY  •  APP DATA STAYS SAFE",11,R.color.muted);
-        note.setGravity(Gravity.CENTER); note.setLetterSpacing(.08f); note.setPadding(dp(14),dp(16),dp(14),dp(8)); root.addView(note);
+        setContentView(shell);
     }
     private View hotspot(Runnable action){
         View v=new View(this); v.setBackgroundColor(android.graphics.Color.TRANSPARENT);
