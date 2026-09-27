@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <item type="mipmap" name="ic_launcher">@drawable/endra_clean_launcher</item>
+    <item type="mipmap" name="ic_launcher_round">@drawable/endra_clean_launcher</item>
+</resources>
