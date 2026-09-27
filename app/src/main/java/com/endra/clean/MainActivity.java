@@ -36,14 +36,31 @@ public final class MainActivity extends Activity {
         Button help=small("?",this::showHelp);bar.addView(help,new LinearLayout.LayoutParams(dp(52),dp(48)));root.addView(bar);
     }
     private void showHome(){
-        systemPage=false;base();header(true);
-        ImageView art=new ImageView(this); art.setImageResource(R.drawable.endra_hydra_home); art.setScaleType(ImageView.ScaleType.CENTER_CROP); art.setAdjustViewBounds(true); LinearLayout.LayoutParams ap=new LinearLayout.LayoutParams(-1,dp(300)); ap.setMargins(0,dp(8),0,dp(8)); root.addView(art,ap);
-        TextView title=text("EndraClean",31,R.color.gold);title.setGravity(Gravity.CENTER);title.setTypeface(Typeface.DEFAULT,Typeface.BOLD);root.addView(title);
-        TextView tag=text("CLEANER  •  FASTER  •  SMOOTHER",12,R.color.muted);tag.setGravity(Gravity.CENTER);root.addView(tag);
-        LinearLayout p=panel(); LinearLayout.LayoutParams pp=new LinearLayout.LayoutParams(-1,-2);pp.setMargins(0,dp(18),0,0);root.addView(p,pp);
-        p.addView(navButton("USER APPS","Apps you installed",()->showApps(false)));
-        p.addView(navButton("SYSTEM APPS","Built-in Android apps",()->showApps(true)));
-        TextView note=text("CACHE ONLY  •  APP DATA IS NEVER CLEARED",11,R.color.gold);note.setGravity(Gravity.CENTER);root.addView(note);
+        systemPage=false; rows=null; clean=null; status=null;
+        FrameLayout stage=new FrameLayout(this);
+        stage.setBackgroundColor(getColor(R.color.navy));
+        ImageView art=new ImageView(this);
+        art.setImageResource(R.drawable.endra_clean_home);
+        art.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        art.setAdjustViewBounds(false);
+        stage.addView(art,new FrameLayout.LayoutParams(-1,-1,Gravity.CENTER));
+
+        View help=hotspot(()->showHelp());
+        FrameLayout.LayoutParams hp=new FrameLayout.LayoutParams(dp(72),dp(72),Gravity.TOP|Gravity.END);
+        hp.setMargins(0,dp(18),dp(12),0); stage.addView(help,hp);
+
+        View users=hotspot(()->showApps(false));
+        FrameLayout.LayoutParams up=new FrameLayout.LayoutParams(-1,dp(150),Gravity.BOTTOM);
+        up.setMargins(dp(22),0,dp(22),dp(205)); stage.addView(users,up);
+
+        View systems=hotspot(()->showApps(true));
+        FrameLayout.LayoutParams sp=new FrameLayout.LayoutParams(-1,dp(150),Gravity.BOTTOM);
+        sp.setMargins(dp(22),0,dp(22),dp(42)); stage.addView(systems,sp);
+        setContentView(stage);
+    }
+    private View hotspot(Runnable action){
+        View v=new View(this); v.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+        v.setClickable(true); v.setFocusable(true); v.setOnClickListener(x->action.run()); return v;
     }
     private void showApps(boolean system){
         systemPage=system;base();header(false);
