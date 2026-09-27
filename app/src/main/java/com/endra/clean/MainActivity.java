@@ -28,7 +28,7 @@ public final class MainActivity extends Activity {
     private void base(){
         FrameLayout shell=new FrameLayout(this); shell.setBackgroundColor(getColor(R.color.navy));
         ScrollView scroll=new ScrollView(this); scroll.setFillViewport(true); scroll.setClipToPadding(false);
-        root=new LinearLayout(this); root.setOrientation(LinearLayout.VERTICAL); root.setPadding(dp(16),dp(10),dp(16),dp(28));
+        root=new LinearLayout(this); root.setOrientation(LinearLayout.VERTICAL); root.setPadding(dp(12),dp(8),dp(12),dp(28));
         scroll.addView(root,new ScrollView.LayoutParams(-1,-2));
         FrameLayout.LayoutParams slp=new FrameLayout.LayoutParams(-1,-1,Gravity.CENTER);
         slp.width=Math.min(getResources().getDisplayMetrics().widthPixels,dp(CONTENT_MAX_DP));
@@ -36,10 +36,10 @@ public final class MainActivity extends Activity {
     }
     private void header(boolean home){
         LinearLayout bar=new LinearLayout(this); bar.setGravity(Gravity.CENTER_VERTICAL);
-        if(!home){Button back=small("⌂",this::showHome);bar.addView(back,new LinearLayout.LayoutParams(dp(52),dp(48)));}
-        TextView brand=text("ENDRACLEAN",home?18:16,R.color.gold);brand.setTypeface(Typeface.DEFAULT,Typeface.BOLD);
+        if(!home){Button back=small("⌂  Home",this::showHome);bar.addView(back,new LinearLayout.LayoutParams(dp(104),dp(52)));}
+        TextView brand=text("EndraClean",home?22:20,R.color.gold);brand.setTypeface(Typeface.DEFAULT,Typeface.BOLD);
         LinearLayout.LayoutParams bp=new LinearLayout.LayoutParams(0,dp(48),1);brand.setGravity(Gravity.CENTER);bar.addView(brand,bp);
-        Button help=small("?",this::showHelp);bar.addView(help,new LinearLayout.LayoutParams(dp(52),dp(48)));root.addView(bar);
+        Button help=small("?",this::showHelp);bar.addView(help,new LinearLayout.LayoutParams(dp(58),dp(52)));root.addView(bar);
     }
     private void showHome(){
         systemPage=false; rows=null; clean=null; status=null; base(); header(true);
@@ -50,7 +50,7 @@ public final class MainActivity extends Activity {
         logo.setImageResource(R.drawable.endra_clean_launcher);
         logo.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         LinearLayout.LayoutParams logoLp=new LinearLayout.LayoutParams(-1,dp(190));
-        logoLp.setMargins(dp(18),0,dp(18),dp(8)); root.addView(logo,logoLp);
+        logoLp.setMargins(dp(8),0,dp(8),dp(6)); root.addView(logo,logoLp);
 
         TextView title=text("ENDRACLEAN",30,R.color.gold);
         title.setTypeface(Typeface.DEFAULT,Typeface.BOLD); title.setGravity(Gravity.CENTER); root.addView(title);
@@ -60,9 +60,9 @@ public final class MainActivity extends Activity {
         LinearLayout.LayoutParams gap=new LinearLayout.LayoutParams(1,dp(18));
         root.addView(new Space(this),gap);
 
-        LinearLayout user=navButton("USER APPS","Scan and clear cache for apps you installed.",()->showApps(false));
+        LinearLayout user=navButton("👥   USER APPS","Scan and clear cache for apps you installed.                         ❯",()->showApps(false));
         root.addView(user);
-        LinearLayout system=navButton("SYSTEM APPS","View Android system apps separately with safety protection.",()->showApps(true));
+        LinearLayout system=navButton("⚙   SYSTEM APPS","Scan Android system-app cache with EndraClean safety protection.     ❯",()->showApps(true));
         root.addView(system);
 
         TextView note=text("Choose a category to begin. EndraClean clears cache only — never app data.",12,R.color.silver);
@@ -77,7 +77,7 @@ public final class MainActivity extends Activity {
         if(system){ showSystemApps(); return; }
 
         LinearLayout hero=goldPanel();
-        TextView title=text("♟  USER APPS",23,R.color.gold); title.setTypeface(Typeface.DEFAULT,Typeface.BOLD); hero.addView(title);
+        TextView title=text("👥  USER APPS",25,R.color.gold); title.setTypeface(Typeface.DEFAULT,Typeface.BOLD); hero.addView(title);
         hero.addView(text("Scan and clear cache for apps you installed.",13,R.color.silver));
         LinearLayout.LayoutParams heroLp=new LinearLayout.LayoutParams(-1,-2); heroLp.setMargins(0,dp(12),0,dp(14)); root.addView(hero,heroLp);
 
@@ -103,7 +103,7 @@ public final class MainActivity extends Activity {
     }
     private void showSystemApps(){
         LinearLayout hero=goldPanel();
-        TextView title=text("⚙  SYSTEM APPS",23,R.color.gold); title.setTypeface(Typeface.DEFAULT,Typeface.BOLD); hero.addView(title);
+        TextView title=text("⚙  SYSTEM APPS",25,R.color.gold); title.setTypeface(Typeface.DEFAULT,Typeface.BOLD); hero.addView(title);
         hero.addView(text("Scan cache for Android system apps.",13,R.color.silver));
         LinearLayout.LayoutParams heroLp=new LinearLayout.LayoutParams(-1,-2); heroLp.setMargins(0,dp(12),0,dp(14)); root.addView(hero,heroLp);
 
@@ -151,7 +151,7 @@ public final class MainActivity extends Activity {
                 TextView label=text(e.label+(e.cacheBytes>=0?"\n"+Formatter.formatShortFileSize(this,e.cacheBytes):"\nCache size unavailable"),15,R.color.silver);
                 LinearLayout.LayoutParams llp=new LinearLayout.LayoutParams(0,-2,1);llp.setMargins(dp(12),0,dp(8),0);row.addView(label,llp);
                 TextView lock=text("🔒",18,R.color.gold); lock.setGravity(Gravity.CENTER); row.addView(lock,new LinearLayout.LayoutParams(dp(44),dp(44)));
-                LinearLayout.LayoutParams rlp=new LinearLayout.LayoutParams(-1,-2);rlp.setMargins(0,0,0,dp(8));rows.addView(row,rlp);
+                LinearLayout.LayoutParams rlp=new LinearLayout.LayoutParams(-1,-2);rlp.setMargins(0,0,0,dp(6));rows.addView(row,rlp);
             }
             else{
                 LinearLayout row=goldPanel(); row.setGravity(Gravity.CENTER_VERTICAL); row.setOrientation(LinearLayout.HORIZONTAL);
@@ -184,7 +184,7 @@ public final class MainActivity extends Activity {
         try{startForegroundService(i);status.setText("Cleaning "+s.size()+" selected user apps. Watch the notification for progress.");}catch(RuntimeException ex){status.setText("Could not start cleaning: "+ex.getMessage());}
     }
     private void showHelp(){new AlertDialog.Builder(this).setTitle("EndraClean Help").setMessage("USER APPS\nApps you installed. EndraClean can guide Android Settings to clear only their cache. App data and storage are never cleared.\n\nSYSTEM APPS\nApps built into Android or supplied by the device maker. EndraClean lists them separately so you can identify them, but the existing safety engine blocks cleaning system apps.\n\nUse Grant usage access to display cache sizes and Enable cleaner service to run a user-started cache cleaning pass.").setPositiveButton("Got it",null).show();}
-    private LinearLayout navButton(String a,String b,Runnable r){LinearLayout p=panel();p.setClickable(true);p.setFocusable(true);p.setOnClickListener(v->r.run());TextView t=text(a,20,R.color.gold);t.setTypeface(Typeface.DEFAULT,Typeface.BOLD);p.addView(t);p.addView(text(b,13,R.color.muted));LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-1,-2);lp.setMargins(0,dp(7),0,dp(7));p.setLayoutParams(lp);return p;}
+    private LinearLayout navButton(String a,String b,Runnable r){LinearLayout p=panel();p.setMinimumHeight(dp(112));p.setGravity(Gravity.CENTER_VERTICAL);p.setClickable(true);p.setFocusable(true);p.setOnClickListener(v->r.run());TextView t=text(a,23,R.color.gold);t.setTypeface(Typeface.DEFAULT,Typeface.BOLD);p.addView(t);p.addView(text(b,13,R.color.muted));LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-1,-2);lp.setMargins(0,dp(7),0,dp(7));p.setLayoutParams(lp);return p;}
     private LinearLayout panel(){LinearLayout p=new LinearLayout(this);p.setOrientation(LinearLayout.VERTICAL);p.setPadding(dp(16),dp(14),dp(16),dp(14));p.setBackgroundResource(R.drawable.panel);return p;}
     private TextView text(String s,int z,int c){TextView v=new TextView(this);v.setText(s);v.setTextSize(z);v.setTextColor(getColor(c));v.setPadding(0,dp(5),0,dp(5));return v;}
     private Button small(String s,Runnable r){Button b=new Button(this);b.setText(s);b.setTextColor(getColor(R.color.gold));b.setTextSize(20);b.setTypeface(Typeface.DEFAULT,Typeface.BOLD);b.setBackgroundResource(R.drawable.tech_button);b.setBackgroundTintList(null);b.setOnClickListener(v->r.run());return b;}
