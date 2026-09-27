@@ -93,10 +93,28 @@ public final class MainActivity extends Activity {
         scanApps();
     }
     private void showSystemApps(){
-        TextView title=text("SYSTEM APPS",24,R.color.gold);title.setTypeface(Typeface.DEFAULT,Typeface.BOLD);root.addView(title);
-        root.addView(text("Built-in Android apps · protected by EndraClean",12,R.color.muted));
-        status=text("System apps are protected by EndraClean.",14,R.color.silver);root.addView(status);
-        rows=goldPanel();root.addView(rows);scanApps();
+        LinearLayout hero=goldPanel();
+        TextView title=text("⚙  SYSTEM APPS",23,R.color.gold); title.setTypeface(Typeface.DEFAULT,Typeface.BOLD); hero.addView(title);
+        hero.addView(text("Scan cache for Android system apps.",13,R.color.silver));
+        LinearLayout.LayoutParams heroLp=new LinearLayout.LayoutParams(-1,-2); heroLp.setMargins(0,dp(12),0,dp(14)); root.addView(hero,heroLp);
+
+        LinearLayout summary=goldPanel();
+        TextView cacheTitle=text("CACHE SCAN",12,R.color.gold); cacheTitle.setTypeface(Typeface.DEFAULT,Typeface.BOLD); summary.addView(cacheTitle);
+        status=text("System apps are protected by EndraClean.",14,R.color.silver); summary.addView(status);
+        LinearLayout actions=new LinearLayout(this); actions.setGravity(Gravity.CENTER); actions.setOrientation(LinearLayout.HORIZONTAL);
+        Button scan=compactButton("Scan Cache",true,()->{if(!hasUsageAccess())startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));else scanApps();});
+        Button rescan=compactButton("Rescan",false,this::scanApps);
+        Button all=compactButton("Select All",false,()->{if(status!=null)status.setText("System apps remain protected. Selection is disabled.");});
+        actions.addView(scan,new LinearLayout.LayoutParams(0,dp(54),1));
+        actions.addView(rescan,new LinearLayout.LayoutParams(0,dp(54),1));
+        actions.addView(all,new LinearLayout.LayoutParams(0,dp(54),1));
+        summary.addView(actions); root.addView(summary);
+
+        rows=new LinearLayout(this); rows.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams rp=new LinearLayout.LayoutParams(-1,-2); rp.setMargins(0,dp(14),0,dp(14)); root.addView(rows,rp);
+        Button protectedButton=button("🛡  System Cache Protected",true,()->{if(status!=null)status.setText("EndraClean does not clear protected system-app cache.");});
+        protectedButton.setEnabled(false); root.addView(protectedButton);
+        scanApps();
     }
     private LinearLayout goldPanel(){
         LinearLayout p=new LinearLayout(this); p.setOrientation(LinearLayout.VERTICAL); p.setPadding(dp(16),dp(14),dp(16),dp(14));
@@ -118,7 +136,14 @@ public final class MainActivity extends Activity {
         }
         Collections.sort(apps,(a,b)->a.label.compareToIgnoreCase(b.label));
         for(AppEntry e:apps){
-            if(systemPage){TextView v=text(e.label+(e.cacheBytes>=0?"  ·  "+Formatter.formatShortFileSize(this,e.cacheBytes):""),15,R.color.silver);v.setPadding(dp(8),dp(12),dp(8),dp(12));rows.addView(v);}
+            if(systemPage){
+                LinearLayout row=goldPanel(); row.setGravity(Gravity.CENTER_VERTICAL); row.setOrientation(LinearLayout.HORIZONTAL);
+                try{ImageView icon=new ImageView(this);icon.setImageDrawable(pm.getApplicationIcon(e.packageName));row.addView(icon,new LinearLayout.LayoutParams(dp(44),dp(44)));}catch(Exception ignored){}
+                TextView label=text(e.label+(e.cacheBytes>=0?"\n"+Formatter.formatShortFileSize(this,e.cacheBytes):"\nCache size unavailable"),15,R.color.silver);
+                LinearLayout.LayoutParams llp=new LinearLayout.LayoutParams(0,-2,1);llp.setMargins(dp(12),0,dp(8),0);row.addView(label,llp);
+                TextView lock=text("🔒",18,R.color.gold); lock.setGravity(Gravity.CENTER); row.addView(lock,new LinearLayout.LayoutParams(dp(44),dp(44)));
+                LinearLayout.LayoutParams rlp=new LinearLayout.LayoutParams(-1,-2);rlp.setMargins(0,0,0,dp(8));rows.addView(row,rlp);
+            }
             else{
                 LinearLayout row=goldPanel(); row.setGravity(Gravity.CENTER_VERTICAL); row.setOrientation(LinearLayout.HORIZONTAL);
                 try{ImageView icon=new ImageView(this);icon.setImageDrawable(pm.getApplicationIcon(e.packageName));row.addView(icon,new LinearLayout.LayoutParams(dp(44),dp(44)));}catch(Exception ignored){}
