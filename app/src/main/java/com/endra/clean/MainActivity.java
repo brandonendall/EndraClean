@@ -46,7 +46,7 @@ public final class MainActivity extends Activity {
         FrameLayout shell=new FrameLayout(this); shell.setBackgroundColor(android.graphics.Color.BLACK);
 
         ImageView art=new ImageView(this);
-        art.setImageResource(R.drawable.endra_clean_home);
+        art.setImageResource(R.drawable.endra_clean_launcher);
         art.setScaleType(ImageView.ScaleType.FIT_CENTER);
         art.setAdjustViewBounds(false);
         shell.addView(art,new FrameLayout.LayoutParams(-1,-1));
