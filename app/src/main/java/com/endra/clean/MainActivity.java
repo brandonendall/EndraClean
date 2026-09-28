@@ -47,22 +47,22 @@ public final class MainActivity extends Activity {
 
         ImageView art=new ImageView(this);
         art.setImageResource(R.drawable.endra_clean_home);
-        art.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        art.setScaleType(ImageView.ScaleType.CENTER_CROP);
         art.setAdjustViewBounds(false);
         shell.addView(art,new FrameLayout.LayoutParams(-1,-1));
 
         View help=hotspot(this::showHelp);
         FrameLayout.LayoutParams hp=new FrameLayout.LayoutParams(dp(76),dp(76),Gravity.TOP|Gravity.RIGHT);
-        hp.setMargins(0,dp(6),dp(4),0); shell.addView(help,hp);
+        hp.setMargins(0,dp(12),dp(12),0); shell.addView(help,hp);
 
         View user=hotspot(()->showApps(false));
         FrameLayout.LayoutParams up=new FrameLayout.LayoutParams(-1,dp(128),Gravity.CENTER_HORIZONTAL);
-        up.leftMargin=dp(20);up.rightMargin=dp(20);up.topMargin=(int)(getResources().getDisplayMetrics().heightPixels*.56f);
+        up.leftMargin=dp(18);up.rightMargin=dp(18);up.topMargin=(int)(getResources().getDisplayMetrics().heightPixels*.58f);
         shell.addView(user,up);
 
         View system=hotspot(()->showApps(true));
         FrameLayout.LayoutParams sp=new FrameLayout.LayoutParams(-1,dp(128),Gravity.CENTER_HORIZONTAL);
-        sp.leftMargin=dp(20);sp.rightMargin=dp(20);sp.topMargin=(int)(getResources().getDisplayMetrics().heightPixels*.70f);
+        sp.leftMargin=dp(18);sp.rightMargin=dp(18);sp.topMargin=(int)(getResources().getDisplayMetrics().heightPixels*.73f);
         shell.addView(system,sp);
 
         setContentView(shell);
