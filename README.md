@@ -1,10 +1,10 @@
 # EndraClean
 
-**[Download EndraClean — Run 32 (0.32-gold)](https://github.com/brandonendall/EndraClean/raw/refs/heads/main/downloads/EndraClean.apk)**
+**[Download EndraClean — Run 33 (0.33-gold)](https://github.com/brandonendall/EndraClean/raw/refs/heads/main/downloads/EndraClean.apk)**
 
-Run 32 preserves the home artwork's proportions in one continuous screen and includes the approved gold Hydra icon with EndraClean serif lettering. Phone/tablet layout and navigation checks passed; physical-device testing is still needed.
+Run 33 returns to EndraClean's User Apps screen and refreshes the list after the cleaning queue finishes. The approved continuous home screen and gold Hydra icon are unchanged. Nine automated checks passed, including completion, cancellation, and phone/tablet layouts; physical-device confirmation is still needed.
 
-Run 32 installs directly over Build 31 with the same signing certificate. Builds 30 and earlier may require uninstalling the older app first and re-enabling permissions. The downloadable APK is newer than the source currently in this repository.
+Run 33 installs directly over Run 32 or Build 31 with the same signing certificate. Builds 30 and earlier may require uninstalling the older app first and re-enabling permissions. The downloadable APK is newer than the source currently in this repository.
 
 Download integrity: [SHA-256 checksum](downloads/SHA256SUMS).
 
