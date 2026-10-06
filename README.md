@@ -1,5 +1,15 @@
 # EndraClean
 
+**[Download EndraClean — Build 31 (0.31-gold)](https://github.com/brandonendall/EndraClean/raw/refs/heads/main/downloads/EndraClean.apk)**
+
+This APK includes the continuous gold-and-black home screen and clearer three-headed Hydra icon. Phone/tablet layout and navigation checks passed; physical-device testing is still needed.
+
+Build 31 uses a different signing certificate from Build 30: uninstall the older app before installing, then re-enable its permissions. The downloadable APK is newer than the source currently in this repository.
+
+Download integrity: [SHA-256 checksum](downloads/SHA256SUMS).
+
+## Earlier source documentation
+
 EndraClean is a user-app cache cleaner for Android. This is a **source reconstruction** guided by the EndraClean v0.3 handoff and APK, with visual treatment based on the EndraLink source. It is not the original v0.3 source or a claim of binary equivalence.
 
 The same deep navy, raised blue panels, rounded gradient controls and Hydra motif as EndraLink use **gold/yellow** accents here. The launcher emblem and in-app three-headed Hydra are drawn from project-owned vector/canvas shapes.
