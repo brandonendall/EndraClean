@@ -1,10 +1,10 @@
 # EndraClean
 
-**[Download EndraClean — Run 39 (0.39-gold)](https://github.com/brandonendall/EndraClean/raw/refs/heads/main/downloads/EndraClean.apk)**
+**[Download EndraClean — Run 39 consolidated (0.39.1-gold)](https://github.com/brandonendall/EndraClean/raw/refs/heads/main/downloads/EndraClean.apk)**
 
 Run 39 is ready for physical-device testing, not final release approval. It adds a saved User Apps scan profile and Manage Apps, hides zero-cache results, and shows the approved Hydra cleaning overlay with real processing progress and Stop. System Apps remain informational and cannot be cleaned. The Run 38 Help dialog, Home artwork, launcher icon, and original signing identity are preserved.
 
-49 automated tests passed. Android 8.0/API 26 or newer is required. JP6S was announced with Android 8.1, but authorized installation, permissions, and cleaning on correctional tablets remain untested. JP5 compatibility is not established. Android/OEM security controls may suppress overlays on sensitive Settings screens; no protections are bypassed.
+50 automated tests passed, including a simulated two-app Settings transition with the same overlay window. This consolidated revision centers setup over dimmed Home, restyles the live Permissions screen with separate gold panels, and removes the ordinary-transition overlay hide. Android versionCode 40 orders this update after the earlier Run 39; it remains the Run 39 testing milestone. Physical-device coverage and data-retention checks remain pending. Android 8.0/API 26 or newer is required. JP6S was announced with Android 8.1, but authorized installation, permissions, and cleaning on correctional tablets remain untested. JP5 compatibility is not established. Android/OEM security controls may suppress overlays on sensitive Settings screens; no protections are bypassed.
 
 Install over the existing app with the matching certificate; update installation and data retention still need physical-device confirmation. Do not uninstall merely to update. The downloadable APK is newer than the historical source currently in this repository.
 
